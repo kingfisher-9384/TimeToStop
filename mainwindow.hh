@@ -21,27 +21,32 @@ public:
 
 private slots:
 
-    bool timer_on_off();
+    //bool timer_on_off();
 
-    void change_duration();
+    //void change_duration();
 
-    void timerFunction();
+    void timer_func();
 
 private:
 
     QWidget* widgetCentral_;
-    QBoxLayout* outerBoxLayout_;
-    QBoxLayout* innerBoxLayout_;
+    QGridLayout* gLayout_;
 
     QPushButton* onOffButton_;
     QPushButton* somethingButton_;
     QPushButton* changeDurationButton_;
 
+    QLabel* hour_label_;
+    QLabel* minute_label_;
+    QLabel* second_label_;
+
     QTimer* timer_;
 
 
-    const int INTERVAL = 1000;  // in ms
-    int duration_;
+    const int INTERVAL = 1000;
+    int hours_;
+    int minutes_;
+    int seconds_;
     int remainingTime_;
 
     bool isTimerOn_;   // maybe save the last state in a txt file or something cuz otherwise always init to on
@@ -49,14 +54,15 @@ private:
 
     void init_buttons();
 
-    void init_labels();   // time label, title label, remaining label, end label
+    void init_labels();   // title label, remaining label, end label
 
     void update_labels();
 
     void update_time_label();
 
+    int read_time();  // error checks
 
-
+    void timer_end();
 
 };
 #endif // MAINWINDOW_HH
