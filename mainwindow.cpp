@@ -6,9 +6,6 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
     widgetCentral_(new QWidget(this)),
     gLayout_(new QGridLayout(widgetCentral_)),
-    hour_label_(new QLabel("01")),
-    minute_label_(new QLabel("00")),
-    second_label_(new QLabel("00")),
     hours_(1),
     minutes_(0),
     seconds_(0),
@@ -17,8 +14,21 @@ MainWindow::MainWindow(QWidget *parent)
 {
     setCentralWidget(widgetCentral_);
 
+    QString hourz = QString::number(hours_);
+    QString minutez = QString::number(minutes_);
+    QString secondz = QString::number(seconds_);
+    if (hours_ < 10)
+        hourz = "0" + hourz;
+    if (minutes_ < 10)
+        minutez = "0" + minutez;
+    if (seconds_ < 10)
+        secondz = "0" + secondz;
+
+    time_label_= new QLabel(hourz + ":" + minutez + ":" + secondz);
+
     timer_ = new QTimer(this);
-    connect(timer_, SIGNAL(timeout()), this, SLOT(timerFunction()));
+    connect(timer_, SIGNAL(timeout()), this, SLOT(timer_func()));
+    timer_->start(INTERVAL);
 
     init_buttons();
     init_labels();
@@ -46,43 +56,52 @@ void MainWindow::init_buttons()
 
 void MainWindow::init_labels()
 {
-    gLayout_->addWidget(hour_label_, 3, 2);
-    gLayout_->addWidget(minute_label_, 3, 3);
-    gLayout_->addWidget(second_label_, 3, 4);
+    gLayout_->addWidget(time_label_, 3, 3);
 
-    second_label_->setFixedWidth(100); // center this shit somehow
+    time_label_->setAlignment(Qt::AlignCenter);
+
+    time_label_->setStyleSheet("font: 30pt;");
 }
 
 
 void MainWindow::timer_func()
 {
+
     if (seconds_ == 0 && minutes_ == 0 && hours_ == 0)
     {
         //timer_end();
+        time_label_->setText("GET FUCKED CUNT");
     }
 
-    --seconds_;
-
-    if (seconds_ == 0 && minutes_ > 0)
+    else
     {
-        --minutes_;
-        seconds_ = 60;
+        if (minutes_ == 0 && hours_ > 0)
+        {
+            --hours_;
+            minutes_ = 60;
+        }
+        if (seconds_ == 0)
+        {
+            --minutes_;
+            seconds_ = 60;
+        }
+        --seconds_;
+
+
+        QString hourz = QString::number(hours_);
+        QString minutez = QString::number(minutes_);
+        QString secondz = QString::number(seconds_);
+
+        if (hours_ < 10)
+            hourz = "0" + hourz;
+        if (minutes_ < 10)
+            minutez = "0" + minutez;
+        if (seconds_ < 10)
+            secondz = "0" + secondz;
+
+        time_label_->setText(hourz + ":" + minutez + ":" + secondz);
     }
 
-    if (minutes_ == 0 && hours_ > 0)
-    {
-        --hours_;
-        minutes_ = 60;
-    }
-
-    if (hours_ == 0)
-    {
-        minutes_ = 60;
-    }
-
-    hour_label_->setText(QString::number(hours_));
-    minute_label_->setText(QString::number(minutes_));
-    second_label_->setText(QString::number(seconds_));
 }
 
 

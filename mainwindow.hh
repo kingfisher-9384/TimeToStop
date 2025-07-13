@@ -36,9 +36,7 @@ private:
     QPushButton* somethingButton_;
     QPushButton* changeDurationButton_;
 
-    QLabel* hour_label_;
-    QLabel* minute_label_;
-    QLabel* second_label_;
+    QLabel* time_label_;
 
     QTimer* timer_;
 
@@ -50,6 +48,12 @@ private:
     int remainingTime_;
 
     bool isTimerOn_;   // maybe save the last state in a txt file or something cuz otherwise always init to on
+
+    //int test_time = 0;
+
+    QString hourz = QString::number(hours_);
+    QString minutez = QString::number(minutes_);
+    QString secondz = QString::number(seconds_);
 
 
     void init_buttons();
