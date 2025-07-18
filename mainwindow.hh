@@ -21,11 +21,13 @@ public:
 
 private slots:
 
-    //bool timer_on_off();
+    int timer_on_off();
 
-    //void change_duration();
+    void change_duration();
 
     void timer_func();
+
+    void something_func();
 
 private:
 
@@ -48,6 +50,7 @@ private:
     int remainingTime_;
 
     bool isTimerOn_;   // maybe save the last state in a txt file or something cuz otherwise always init to on
+                       // put logic into own class, like all the exe shit and background and save to txt
 
     //int test_time = 0;
 

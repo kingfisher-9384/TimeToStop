@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     setCentralWidget(widgetCentral_);
 
+
     QString hourz = QString::number(hours_);
     QString minutez = QString::number(minutes_);
     QString secondz = QString::number(seconds_);
@@ -32,12 +33,17 @@ MainWindow::MainWindow(QWidget *parent)
 
     init_buttons();
     init_labels();
+
+    connect(onOffButton_, &QPushButton::clicked, this, &MainWindow::timer_on_off);
+    connect(somethingButton_, &QPushButton::clicked, this, &MainWindow::something_func);
+    connect(changeDurationButton_, &QPushButton::clicked, this, &MainWindow::change_duration);
 }
 
 
 
 MainWindow::~MainWindow()
 {}
+
 
 void MainWindow::init_buttons()
 {
@@ -66,7 +72,6 @@ void MainWindow::init_labels()
 
 void MainWindow::timer_func()
 {
-
     if (seconds_ == 0 && minutes_ == 0 && hours_ == 0)
     {
         //timer_end();
@@ -101,7 +106,40 @@ void MainWindow::timer_func()
 
         time_label_->setText(hourz + ":" + minutez + ":" + secondz);
     }
-
 }
 
+
+int MainWindow::timer_on_off()
+{
+    if (isTimerOn_ == true)
+    {
+        isTimerOn_ = false;
+        qDebug() << "switched off";
+        return 0;
+    }
+
+    if (isTimerOn_ == false)
+    {
+        isTimerOn_ = true;
+        qDebug() << "switched on";
+        return 1;
+    }
+
+    qDebug() << "it's shit itself";
+    return 3;
+}
+
+
+void MainWindow::something_func()
+{
+    qDebug() << "something";
+}
+
+
+void MainWindow::change_duration()
+{
+    qDebug() << "changed duration to";
+    //implement this
+
+}
 
