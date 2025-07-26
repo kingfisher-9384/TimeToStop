@@ -43,7 +43,10 @@ MainWindow::MainWindow(QWidget *parent)
 
 
 MainWindow::~MainWindow()
-{}
+{
+    // even this doesn't work
+    //window_->close();
+}
 
 
 void MainWindow::init_buttons()
@@ -141,8 +144,10 @@ void MainWindow::change_duration()
 {
     qDebug() << "changed duration to";
 
-    DurationWindow* window = new DurationWindow();
+    // see if theres a way to create the window during runtime so that there's no decleration in header
+    window_ = new DurationWindow(this);
+    window_->show();
 
-    window->show();
+    // why the fuck does this not work its parent is mainwindow, its a Q_OBJECT and everything????
 }
 

@@ -3,7 +3,7 @@
 
 
 
-DurationWindow::DurationWindow():
+DurationWindow::DurationWindow(QWidget*):
     widgetCentral_(new QWidget(this)),
     gLayout_(new QGridLayout(widgetCentral_))
 {

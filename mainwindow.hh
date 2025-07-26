@@ -8,6 +8,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QTimer>
+#include "durationwindow.hh"
 
 
 class MainWindow : public QMainWindow
@@ -58,6 +59,7 @@ private:
     QString minutez = QString::number(minutes_);
     QString secondz = QString::number(seconds_);
 
+    DurationWindow* window_;
 
     void init_buttons();
 

@@ -10,11 +10,10 @@
 // make this the child of mainwindow
 class DurationWindow : public QWidget
 {
-    //Q_OBJECT
-    // find out why this gives the vtable error
+    Q_OBJECT
 
 public:
-    explicit DurationWindow();
+    explicit DurationWindow(QWidget *parent = 0);
     ~DurationWindow();
 
 private slots:
