@@ -1,4 +1,5 @@
 #include "mainwindow.hh"
+#include "durationwindow.hh"
 #include <QString>
 
 
@@ -139,7 +140,9 @@ void MainWindow::something_func()
 void MainWindow::change_duration()
 {
     qDebug() << "changed duration to";
-    //implement this
 
+    DurationWindow* window = new DurationWindow();
+
+    window->show();
 }
 
