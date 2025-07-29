@@ -7,7 +7,6 @@
 #include <QGridLayout>
 
 
-// make this the child of mainwindow
 class DurationWindow : public QWidget
 {
     Q_OBJECT

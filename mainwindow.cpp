@@ -148,6 +148,6 @@ void MainWindow::change_duration()
     window_ = new DurationWindow(this);
     window_->show();
 
-    // why the fuck does this not work its parent is mainwindow, its a Q_OBJECT and everything????
+    // maybe make this local variable cuz idk why you'd need to call it later on
 }
 
