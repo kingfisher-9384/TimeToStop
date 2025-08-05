@@ -44,8 +44,6 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-    // even this doesn't work
-    //window_->close();
 }
 
 
