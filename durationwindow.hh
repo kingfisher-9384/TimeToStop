@@ -17,22 +17,23 @@ public:
     ~DurationWindow();
 
 private slots:
-    //void save_change_slot();  // error checks here but just call save_change
+    bool save_change_slot();
 
 
 private:
     QWidget* widgetCentral_;
     QGridLayout* gLayout_;
 
-    QSpinBox* hour_box_;
-    QSpinBox* minute_box_;
+    QSpinBox* hourBox_;
+    QSpinBox* minuteBox_;
     QLabel* infotext_;
-    QPushButton* save_button_;
+    QPushButton* saveButton_;
 
     int hours_ = 0;
     int minutes_ = 0;
 
     void save_change();
+    void update_time_label();
 
 };
 

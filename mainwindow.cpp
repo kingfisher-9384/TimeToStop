@@ -140,12 +140,8 @@ void MainWindow::something_func()
 
 void MainWindow::change_duration()
 {
-    qDebug() << "changed duration to";
-
-    // see if theres a way to create the window during runtime so that there's no decleration in header
-    window_ = new DurationWindow(this);
-    window_->show();
-
-    // maybe make this local variable cuz idk why you'd need to call it later on
+    qDebug() << "changed duration";
+    DurationWindow* window = new DurationWindow(this);
+    window->show();
 }
 

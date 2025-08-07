@@ -48,18 +48,19 @@ private:
     int hours_;
     int minutes_;
     int seconds_;
-    int remainingTime_;
+
+    std::string previousTime_;
+    bool read_prev_time();   // read the text to hours mins and secs
 
     bool isTimerOn_;   // maybe save the last state in a txt file or something cuz otherwise always init to on
                        // put logic into own class, like all the exe shit and background and save to txt
-
-    //int test_time = 0;
+                       // check if file exists if not init to 1hr
 
     QString hourz = QString::number(hours_);
     QString minutez = QString::number(minutes_);
     QString secondz = QString::number(seconds_);
 
-    DurationWindow* window_;
+    //DurationWindow* window_;  // just in case i need to revert back
 
     void init_buttons();
 

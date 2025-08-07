@@ -8,36 +8,38 @@ DurationWindow::DurationWindow(QWidget* parent):
     widgetCentral_(new QWidget(this)),
     gLayout_(new QGridLayout(widgetCentral_))
 {
-    infotext_ = new QLabel("Waddup bitch", this);
+    infotext_ = new QLabel("Waddup bitch", this);  // init to variable previous time from mainwindow
     gLayout_->addWidget(infotext_, 1, 3);
     infotext_->setStyleSheet("font: 30pt;");
 
-    hour_box_ = new QSpinBox(this);
-    gLayout_->addWidget(hour_box_, 3, 2);
-    hour_box_->setMinimum(0);
-    hour_box_->setMaximum(23);     // MAYBE CHANGE THESE TO LIKE MAX 10HRS
+    hourBox_ = new QSpinBox(this);
+    gLayout_->addWidget(hourBox_, 3, 3);
+    hourBox_->setMinimum(0);
+    hourBox_->setMaximum(23);     // MAYBE CHANGE THESE TO LIKE MAX 10HRS change it also in slot func
 
-    minute_box_ = new QSpinBox(this);
-    gLayout_->addWidget(minute_box_, 3, 4);
-    minute_box_->setMinimum(0);
-    minute_box_->setMaximum(59);
+    minuteBox_ = new QSpinBox(this);
+    gLayout_->addWidget(minuteBox_, 3, 4);
+    minuteBox_->setMinimum(0);
+    minuteBox_->setMaximum(59);
 
-    save_button_ = new QPushButton("Save", this);
-    gLayout_->addWidget(save_button_, 5, 3);
+    saveButton_ = new QPushButton("Save", this);
+    gLayout_->addWidget(saveButton_, 5, 3);
 
     gLayout_->addItem(new QSpacerItem(100, 1), 5, 1);
     gLayout_->addItem(new QSpacerItem(100, 1), 5, 2);
-    gLayout_->addItem(new QSpacerItem(100, 1), 5, 4);
     gLayout_->addItem(new QSpacerItem(100, 1), 5, 5);
+    gLayout_->addItem(new QSpacerItem(100, 1), 5, 6);
 
-    this->setMinimumSize(300, 150);
+    this->setMinimumSize(700, 150);
     this->adjustSize();
     //this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     //this->setMinimumSize(0, 0);
 
     // at which location in the mainwindow is the windowe created maybe the mainwindow limits it
 
-    connect(save_button_, &QPushButton::clicked, this, &DurationWindow::save_change);  // connect this to the slot function
+    connect(saveButton_, &QPushButton::clicked, this, &DurationWindow::save_change_slot);
+    connect(hourBox_, &QSpinBox::valueChanged, this, &DurationWindow::update_time_label);
+    connect(minuteBox_, &QSpinBox::valueChanged, this, &DurationWindow::update_time_label);
 }
 
 DurationWindow::~DurationWindow()
@@ -46,10 +48,55 @@ DurationWindow::~DurationWindow()
 
 void DurationWindow::save_change()
 {
-    hours_ = hour_box_->value();
-    minutes_ = minute_box_->value();
-
-    qDebug() << "hour  " << hours_;
-    qDebug() << "minute  " << minutes_;
+    hours_ = hourBox_->value();
+    minutes_ = minuteBox_->value();
 }
 
+bool DurationWindow::save_change_slot()
+{
+    if (hourBox_->value() == 0 && minuteBox_->value() == 0)
+    {
+        infotext_->setText("Error: Time can't be 0.");
+        qDebug() << "error: tried to set time to 0";
+        qDebug() << "hour:  " << hours_;
+        qDebug() << "minute:  " << minutes_;
+        return false;
+    }
+
+    if (hourBox_->value() > 23)
+    {
+        return false;
+    }
+    if (hourBox_->value() < 0)
+    {
+        return false;
+    }
+
+    if (minuteBox_->value() > 59)
+    {
+        return false;
+    }
+    if (hourBox_->value() < 0)
+    {
+        return false;
+    }
+
+    save_change();
+
+    qDebug() << "new time successfully set";
+    qDebug() << "hour:  " << hours_;
+    qDebug() << "minute:  " << minutes_;
+    return true;
+}
+
+void DurationWindow::update_time_label()
+{
+    QString hourz = QString::number(hourBox_->value());
+    QString minutez = QString::number(minuteBox_->value());
+    if (hourBox_->value() < 10)
+        hourz = "0" + hourz;
+    if (minuteBox_->value() < 10)
+        minutez = "0" + minutez;
+
+    infotext_->setText(hourz + ":" + minutez);
+}
