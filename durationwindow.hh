@@ -29,8 +29,8 @@ private:
     QLabel* infotext_;
     QPushButton* saveButton_;
 
-    int hours_ = 0;
-    int minutes_ = 0;
+    int new_hours_ = 0;
+    int new_minutes_ = 0;
 
     void save_change();
     void update_time_label();

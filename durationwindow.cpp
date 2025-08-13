@@ -1,4 +1,5 @@
 #include "durationwindow.hh"
+#include "saveservice.hh"
 #include <QString>
 
 
@@ -48,8 +49,10 @@ DurationWindow::~DurationWindow()
 
 void DurationWindow::save_change()
 {
-    hours_ = hourBox_->value();
-    minutes_ = minuteBox_->value();
+    new_hours_ = hourBox_->value();
+    new_minutes_ = minuteBox_->value();
+
+    SaveService::saveTime();
 }
 
 bool DurationWindow::save_change_slot()
@@ -58,8 +61,8 @@ bool DurationWindow::save_change_slot()
     {
         infotext_->setText("Error: Time can't be 0.");
         qDebug() << "error: tried to set time to 0";
-        qDebug() << "hour:  " << hours_;
-        qDebug() << "minute:  " << minutes_;
+        qDebug() << "hour:  " << new_hours_;
+        qDebug() << "minute:  " << new_minutes_;
         return false;
     }
 
@@ -84,8 +87,8 @@ bool DurationWindow::save_change_slot()
     save_change();
 
     qDebug() << "new time successfully set";
-    qDebug() << "hour:  " << hours_;
-    qDebug() << "minute:  " << minutes_;
+    qDebug() << "hour:  " << new_hours_;
+    qDebug() << "minute:  " << new_minutes_;
     return true;
 }
 

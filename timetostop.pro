@@ -11,11 +11,13 @@ CONFIG += c++17
 SOURCES += \
     durationwindow.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    saveservice.cpp
 
 HEADERS += \
     durationwindow.hh \
-    mainwindow.hh
+    mainwindow.hh \
+    saveservice.hh
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
