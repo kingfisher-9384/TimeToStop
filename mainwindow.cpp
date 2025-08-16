@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent)
     widgetCentral_(new QWidget(this)),
     gLayout_(new QGridLayout(widgetCentral_)),
     hours_(1),
-    minutes_(0),
+    minutes_(0),  // init to these, interpret from the json, call duration save so that if not exist it creates
     seconds_(0),
     isTimerOn_(true)
 

@@ -1,27 +1,31 @@
 #include "saveservice.hh"
-#include <QDir>
 
 
 SaveService::SaveService()
 {}
 
 
-bool SaveService::saveTime()
+bool SaveService::saveTime(int hours, int minutes)
 {
 
-    if (!QDir("ProgramData/saves").exists())
+    if (!QDir("data").exists())
     {
-        QDir().mkdir("ProgramData/saves");
-
-        // doesn't fucking work!!
-
-
+        QDir().mkdir("data");
     }
 
     std::fstream file;
-    file.open("saves.json", )
-        // try to open in fstream so r and w or then just open and close accordingly
+    file.open("data/saves.json", std::ios::out);
 
+
+    std::string hourz = std::to_string(hours);
+    std::string minutez = std::to_string(minutes);
+    if (hours < 10)
+        hourz = "0" + hourz;
+    if (minutes < 10)
+        minutez = "0" + minutez;
+
+
+    file << hourz << minutez << std::endl; // append flag
 
 
     return true;
