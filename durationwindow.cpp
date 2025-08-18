@@ -52,7 +52,7 @@ void DurationWindow::save_change()
     new_hours_ = hourBox_->value();
     new_minutes_ = minuteBox_->value();
 
-    SaveService::saveTime(new_hours_, new_minutes_);
+    SaveService::save_time(new_hours_, new_minutes_);
 }
 
 bool DurationWindow::save_change_slot()

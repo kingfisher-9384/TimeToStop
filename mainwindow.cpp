@@ -1,5 +1,6 @@
 #include "mainwindow.hh"
 #include "durationwindow.hh"
+#include "saveservice.hh"
 #include <QString>
 
 
@@ -10,11 +11,12 @@ MainWindow::MainWindow(QWidget *parent)
     hours_(1),
     minutes_(0),  // init to these, interpret from the json, call duration save so that if not exist it creates
     seconds_(0),
-    isTimerOn_(true)
+    is_timer_on_(true)
 
 {
     setCentralWidget(widgetCentral_);
 
+    read_from_saves();
 
     QString hourz = QString::number(hours_);
     QString minutez = QString::number(minutes_);
@@ -26,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
     if (seconds_ < 10)
         secondz = "0" + secondz;
 
-    time_label_= new QLabel(hourz + ":" + minutez + ":" + secondz);
+    timeLabel_= new QLabel(hourz + ":" + minutez + ":" + secondz);
 
     timer_ = new QTimer(this);
     connect(timer_, SIGNAL(timeout()), this, SLOT(timer_func()));
@@ -64,11 +66,11 @@ void MainWindow::init_buttons()
 
 void MainWindow::init_labels()
 {
-    gLayout_->addWidget(time_label_, 3, 3);
+    gLayout_->addWidget(timeLabel_, 3, 3);
 
-    time_label_->setAlignment(Qt::AlignCenter);
+    timeLabel_->setAlignment(Qt::AlignCenter);
 
-    time_label_->setStyleSheet("font: 30pt;");
+    timeLabel_->setStyleSheet("font: 30pt;");
 }
 
 
@@ -77,7 +79,7 @@ void MainWindow::timer_func()
     if (seconds_ == 0 && minutes_ == 0 && hours_ == 0)
     {
         //timer_end();
-        time_label_->setText("GET FUCKED CUNT");
+        timeLabel_->setText("GET FUCKED CUNT");
     }
 
     else
@@ -106,23 +108,23 @@ void MainWindow::timer_func()
         if (seconds_ < 10)
             secondz = "0" + secondz;
 
-        time_label_->setText(hourz + ":" + minutez + ":" + secondz);
+        timeLabel_->setText(hourz + ":" + minutez + ":" + secondz);
     }
 }
 
 
 int MainWindow::timer_on_off()
 {
-    if (isTimerOn_ == true)
+    if (is_timer_on_ == true)
     {
-        isTimerOn_ = false;
+        is_timer_on_ = false;
         qDebug() << "switched off";
         return 0;
     }
 
-    if (isTimerOn_ == false)
+    if (is_timer_on_ == false)
     {
-        isTimerOn_ = true;
+        is_timer_on_ = true;
         qDebug() << "switched on";
         return 1;
     }
@@ -145,3 +147,15 @@ void MainWindow::change_duration()
     window->show();
 }
 
+void MainWindow::read_from_saves()
+{
+    std::string time = SaveService::read_time();
+
+    auto temp_string = std::string(1, time[0]) + time[1];
+    hours_ = std::stoi(temp_string);
+    temp_string = std::string(1, time[2]) + time[3];
+    minutes_ = std::stoi(temp_string);
+
+    // needs error checking
+    // what if no file
+}
