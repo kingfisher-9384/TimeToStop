@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
     widgetCentral_(new QWidget(this)),
     gLayout_(new QGridLayout(widgetCentral_)),
-    hours_(1),
+    hours_(0),
     minutes_(0),  // init to these, interpret from the json, call duration save so that if not exist it creates
     seconds_(0),
     is_timer_on_(true)
@@ -147,15 +147,11 @@ void MainWindow::change_duration()
     window->show();
 }
 
+
 void MainWindow::read_from_saves()
 {
-    std::string time = SaveService::read_time();
+    std::pair<int, int> hour_and_min = SaveService::read_time();
 
-    auto temp_string = std::string(1, time[0]) + time[1];
-    hours_ = std::stoi(temp_string);
-    temp_string = std::string(1, time[2]) + time[3];
-    minutes_ = std::stoi(temp_string);
-
-    // needs error checking
-    // what if no file
+    hours_ = hour_and_min.first;
+    minutes_ = hour_and_min.second;
 }

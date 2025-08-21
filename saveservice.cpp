@@ -1,6 +1,9 @@
 #include "saveservice.hh"
+//#include <sys/stat.h>
+//#include <experimental/filesystem>
 #include <fstream>
 #include <vector>
+#include <string>
 
 
 SaveService::SaveService()
@@ -33,10 +36,13 @@ bool SaveService::save_time(int hours, int minutes)
 }
 
 
-std::string SaveService::read_time()
+std::pair<int,int> SaveService::read_time()
 {
-    //if (file_exists())
-    //{
+    std::pair<int,int> hour_and_min;
+
+    if (file_exists())
+    {
+        qDebug() << "yay it worky";
         std::fstream file;
         file.open("data/saves.json", std::ios::in);
 
@@ -48,14 +54,60 @@ std::string SaveService::read_time()
             if (temp_line.length() > 0)
             {
                 lines.push_back(temp_line);
+                temp_line = "";
             }
         }
+        hour_and_min = get_time_from_line(lines);
 
-        return lines[0];
-    //}
-    //else
-        //return "balls";
+        return hour_and_min;
+    }
+    else
+    {
+        qDebug() << "no worky";
+        save_time(DEFAULT_HOUR, DEFAULT_MINUTE);
+
+        std::fstream file;
+        file.open("data/saves.json", std::ios::in);
+
+        std::vector<std::string> lines;
+        std::string temp_line;
+
+        while (getline(file, temp_line))
+        {
+            if (temp_line.length() > 0)
+            {
+                lines.push_back(temp_line);
+                temp_line = "";
+            }
+        }
+        hour_and_min = get_time_from_line(lines);
+
+        return hour_and_min;
+    }
 }
 
 
-//bool SaveService::file_exists()
+bool SaveService::file_exists()
+{
+    /*const std::string& path = "data/saves.json";
+    struct stat buffer;
+    return (stat (path.c_str(), &buffer) == 0);*/
+
+    return std::filesystem::exists("data/saves.json");  // maybe just chuck this into read_time
+}
+
+
+std::pair<int,int> SaveService::get_time_from_line(std::vector<std::string> lines)
+{
+    int hour;
+    int minute;
+
+    std::string time = lines[0];
+    auto temp_string = std::string(1, time[0]) + time[1];
+    hour = std::stoi(temp_string);
+    temp_string = std::string(1, time[2]) + time[3];
+    minute = std::stoi(temp_string);
+
+    return (std::pair<int,int>(hour, minute));
+}
+
