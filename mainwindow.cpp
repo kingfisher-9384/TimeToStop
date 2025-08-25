@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent)
     widgetCentral_(new QWidget(this)),
     gLayout_(new QGridLayout(widgetCentral_)),
     hours_(0),
-    minutes_(0),  // init to these, interpret from the json, call duration save so that if not exist it creates
+    minutes_(0),  // these prolly don't even need to bo initialized
     seconds_(0),
     is_timer_on_(true)
 
@@ -84,7 +84,7 @@ void MainWindow::timer_func()
 
     else
     {
-        if (minutes_ == 0 && hours_ > 0)
+        if (seconds_ == 0 && minutes_ == 0 && hours_ > 0)
         {
             --hours_;
             minutes_ = 60;
@@ -113,24 +113,26 @@ void MainWindow::timer_func()
 }
 
 
-int MainWindow::timer_on_off()
+void MainWindow::timer_on_off()
 {
     if (is_timer_on_ == true)
     {
         is_timer_on_ = false;
+        SaveService::set_onoff(false);
         qDebug() << "switched off";
-        return 0;
+        return;
     }
 
     if (is_timer_on_ == false)
     {
         is_timer_on_ = true;
+        SaveService::set_onoff(true);
         qDebug() << "switched on";
-        return 1;
+        return;
     }
 
-    qDebug() << "it's shit itself";
-    return 3;
+    qDebug() << "it's SOMEHOW shit itself";
+    return;
 }
 
 

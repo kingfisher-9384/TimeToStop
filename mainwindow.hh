@@ -22,7 +22,7 @@ public:
 
 private slots:
 
-    int timer_on_off();
+    void timer_on_off();
 
     void change_duration();
 

@@ -59,6 +59,7 @@ std::pair<int,int> SaveService::read_time()
         }
         hour_and_min = get_time_from_line(lines);
 
+        file.close();
         return hour_and_min;
     }
     else
@@ -82,6 +83,7 @@ std::pair<int,int> SaveService::read_time()
         }
         hour_and_min = get_time_from_line(lines);
 
+        file.close();
         return hour_and_min;
     }
 }
@@ -109,5 +111,60 @@ std::pair<int,int> SaveService::get_time_from_line(std::vector<std::string> line
     minute = std::stoi(temp_string);
 
     return (std::pair<int,int>(hour, minute));
+}
+
+bool SaveService::set_onoff(bool is_on)
+{
+    std::fstream file;
+    file.open("data/saves.json");
+
+    std::vector<std::string> lines;
+    std::string temp_line;
+
+    while (getline(file, temp_line))
+    {
+        if (temp_line.length() > 0)
+        {
+            lines.push_back(temp_line);
+            temp_line = "";
+        }
+    }
+
+    if (lines.size() < 2)  // not writing to file, maybe open in and out separately
+    {
+        if (!is_on)
+        {
+            temp_line = "n";
+        }
+        else if (is_on)
+        {
+            temp_line = "y";
+        }
+
+        lines.push_back(temp_line);
+        for (std::string &line : lines)
+        {
+            file << line << std::endl;
+        }
+    }
+    else
+    {
+        if (!is_on)
+        {
+            lines[1] = "n";
+        }
+        else if (is_on)
+        {
+            lines[1] = "y";
+        }
+
+        for (std::string &line : lines)
+        {
+            file << line << std::endl;
+        }
+    }
+
+    file.close();
+    return true;
 }
 

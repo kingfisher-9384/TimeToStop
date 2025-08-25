@@ -10,8 +10,9 @@ public:
     SaveService();
 
     bool static save_time(int hours, int minutes);
+    bool static set_onoff(bool is_on);
     std::pair<int,int> static read_time();
-    bool static read_onoff();  // next up: this fucker
+    bool static read_onoff();
 
 
     private:
