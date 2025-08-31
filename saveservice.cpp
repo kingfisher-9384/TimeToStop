@@ -1,6 +1,4 @@
 #include "saveservice.hh"
-//#include <sys/stat.h>
-//#include <experimental/filesystem>
 #include <fstream>
 #include <vector>
 #include <string>
@@ -40,7 +38,7 @@ std::pair<int,int> SaveService::read_time()
 {
     std::pair<int,int> hour_and_min;
 
-    if (file_exists())
+    if (std::filesystem::exists("data/saves.json"))  // what if first line wrong
     {
         qDebug() << "yay it worky";
         std::fstream file;
@@ -89,16 +87,6 @@ std::pair<int,int> SaveService::read_time()
 }
 
 
-bool SaveService::file_exists()
-{
-    /*const std::string& path = "data/saves.json";
-    struct stat buffer;
-    return (stat (path.c_str(), &buffer) == 0);*/
-
-    return std::filesystem::exists("data/saves.json");  // maybe just chuck this into read_time
-}
-
-
 std::pair<int,int> SaveService::get_time_from_line(std::vector<std::string> lines)
 {
     int hour;
@@ -113,10 +101,11 @@ std::pair<int,int> SaveService::get_time_from_line(std::vector<std::string> line
     return (std::pair<int,int>(hour, minute));
 }
 
+
 bool SaveService::set_onoff(bool is_on)
 {
     std::fstream file;
-    file.open("data/saves.json");
+    file.open("data/saves.json", std::ios::in);
 
     std::vector<std::string> lines;
     std::string temp_line;
@@ -142,6 +131,8 @@ bool SaveService::set_onoff(bool is_on)
         }
 
         lines.push_back(temp_line);
+        file.close();
+        file.open("data/saves.json", std::ios::out);
         for (std::string &line : lines)
         {
             file << line << std::endl;
@@ -158,6 +149,8 @@ bool SaveService::set_onoff(bool is_on)
             lines[1] = "y";
         }
 
+        file.close();
+        file.open("data/saves.json", std::ios::out);
         for (std::string &line : lines)
         {
             file << line << std::endl;
@@ -165,6 +158,13 @@ bool SaveService::set_onoff(bool is_on)
     }
 
     file.close();
+    return true;
+}
+
+bool SaveService::read_onoff()
+{
+    // if 2nd line exists read, else set_onoff(true)
+
     return true;
 }
 

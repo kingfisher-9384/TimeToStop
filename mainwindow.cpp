@@ -153,7 +153,8 @@ void MainWindow::change_duration()
 void MainWindow::read_from_saves()
 {
     std::pair<int, int> hour_and_min = SaveService::read_time();
-
     hours_ = hour_and_min.first;
     minutes_ = hour_and_min.second;
+
+
 }

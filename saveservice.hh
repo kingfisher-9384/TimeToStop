@@ -17,7 +17,6 @@ public:
 
     private:
     std::pair<int,int> static get_time_from_line(std::vector<std::string>);
-    bool static file_exists();
 
 
         const static int DEFAULT_HOUR = 1;
@@ -28,6 +27,7 @@ public:
 
     // this class is only for creating and modifying the json file not for any other logic
     // maybe add some sort of encryption so that not just plaintext
+    // bro start using pointers this shit is mad unoptimized
 };
 
 #endif // SAVESERVICE_HH
