@@ -2,6 +2,8 @@
 #define SAVESERVICE_HH
 #include <utility>
 #include <QDir>
+#include <vector>
+#include <string>
 
 
 class SaveService
@@ -17,6 +19,7 @@ public:
 
     private:
     std::pair<int,int> static get_time_from_line(std::vector<std::string>);
+    std::vector<std::string> static get_file_contents();
 
 
         const static int DEFAULT_HOUR = 1;

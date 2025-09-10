@@ -1,7 +1,5 @@
 #include "saveservice.hh"
 #include <fstream>
-#include <vector>
-#include <string>
 
 
 SaveService::SaveService()
@@ -16,23 +14,9 @@ bool SaveService::save_time(int hours, int minutes)
         QDir().mkdir("data");
     }
 
-    std::fstream file;
-    file.open("data/saves.json", std::ios::in);
+    std::vector<std::string> lines = get_file_contents();
 
-    std::vector<std::string> lines;
-    std::string temp_line;
-
-    while (getline(file, temp_line))
-    {
-        if (temp_line.length() > 0)
-        {
-            lines.push_back(temp_line);
-            temp_line = "";
-        }
-    }
-    file.close();
-
-    std::string hourz = std::to_string(hours);
+    std::string hourz = std::to_string(hours);    // MAYBE make this a separate func
     std::string minutez = std::to_string(minutes);
     if (hours < 10)
         hourz = "0" + hourz;
@@ -46,7 +30,8 @@ bool SaveService::save_time(int hours, int minutes)
     else
         lines[0] = hourz + minutez;
 
-    file.open("data/saves.json", std::ios::out);
+    std::fstream file;
+    file.open("data/saves.json", std::ios::out);   // change this to ofstream
 
     for (unsigned int i = 0; i < lines.size(); ++i)
     {
@@ -64,48 +49,17 @@ std::pair<int,int> SaveService::read_time()
 
     if (std::filesystem::exists("data/saves.json"))  // what if first line wrong then gives stoi error
     {
-        qDebug() << "yay it worky";
-        std::fstream file;
-        file.open("data/saves.json", std::ios::in);
-
-        std::vector<std::string> lines;
-        std::string temp_line;
-
-        while (getline(file, temp_line))
-        {
-            if (temp_line.length() > 0)
-            {
-                lines.push_back(temp_line);
-                temp_line = "";
-            }
-        }
+        std::vector<std::string> lines = get_file_contents();
         hour_and_min = get_time_from_line(lines);
 
-        file.close();
         return hour_and_min;
     }
     else
     {
-        qDebug() << "no worky";
         save_time(DEFAULT_HOUR, DEFAULT_MINUTE);
-
-        std::fstream file;
-        file.open("data/saves.json", std::ios::in);
-
-        std::vector<std::string> lines;
-        std::string temp_line;
-
-        while (getline(file, temp_line))
-        {
-            if (temp_line.length() > 0)
-            {
-                lines.push_back(temp_line);
-                temp_line = "";
-            }
-        }
+        std::vector<std::string> lines = get_file_contents();
         hour_and_min = get_time_from_line(lines);
 
-        file.close();
         return hour_and_min;
     }
 }
@@ -128,6 +82,64 @@ std::pair<int,int> SaveService::get_time_from_line(std::vector<std::string> line
 
 bool SaveService::set_onoff(bool is_on)
 {
+    std::string temp_line;
+    std::vector<std::string> lines = get_file_contents();
+
+    if (lines.size() < 2)
+    {
+        if (!is_on)
+        {
+            temp_line = "n";
+        }
+        else if (is_on)
+        {
+            temp_line = "y";
+        }
+
+        lines.push_back(temp_line);
+
+        std::fstream file;
+        file.open("data/saves.json", std::ios::out);   // make this a function too
+        for (std::string &line : lines)
+        {
+            file << line << std::endl;
+        }
+        file.close();
+    }
+    else
+    {
+        if (!is_on)
+        {
+            lines[1] = "n";
+        }
+        else if (is_on)
+        {
+            lines[1] = "y";
+        }
+
+        std::fstream file;
+        file.open("data/saves.json", std::ios::out);
+        for (std::string &line : lines)
+        {
+            file << line << std::endl;
+        }
+        file.close();
+    }
+
+    return true;
+}
+
+bool SaveService::read_onoff()
+{
+    // if 2nd line exists read, else set_onoff(true)
+    // the internal onoff state doesn't correlate with the file value
+
+    return true;
+}
+
+
+std::vector<std::string> SaveService::get_file_contents()
+{
     std::fstream file;
     file.open("data/saves.json", std::ios::in);
 
@@ -142,53 +154,7 @@ bool SaveService::set_onoff(bool is_on)
             temp_line = "";
         }
     }
-
-    if (lines.size() < 2)
-    {
-        if (!is_on)
-        {
-            temp_line = "n";
-        }
-        else if (is_on)
-        {
-            temp_line = "y";
-        }
-
-        lines.push_back(temp_line);
-        file.close();
-        file.open("data/saves.json", std::ios::out);
-        for (std::string &line : lines)
-        {
-            file << line << std::endl;
-        }
-    }
-    else
-    {
-        if (!is_on)
-        {
-            lines[1] = "n";
-        }
-        else if (is_on)
-        {
-            lines[1] = "y";
-        }
-
-        file.close();
-        file.open("data/saves.json", std::ios::out);
-        for (std::string &line : lines)
-        {
-            file << line << std::endl;
-        }
-    }
-
     file.close();
-    return true;
-}
-
-bool SaveService::read_onoff()
-{
-    // if 2nd line exists read, else set_onoff(true)
-
-    return true;
+    return lines;
 }
 
