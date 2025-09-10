@@ -21,6 +21,7 @@ public:
 
         const static int DEFAULT_HOUR = 1;
         const static int DEFAULT_MINUTE = 0;
+        const static char DEFAULT_STATE = 'y';
 
 
     //const static std::string& path_;  try turning this shit into a variable

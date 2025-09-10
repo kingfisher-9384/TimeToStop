@@ -16,9 +16,21 @@ bool SaveService::save_time(int hours, int minutes)
         QDir().mkdir("data");
     }
 
-
     std::fstream file;
-    file.open("data/saves.json", std::ios::out);
+    file.open("data/saves.json", std::ios::in);
+
+    std::vector<std::string> lines;
+    std::string temp_line;
+
+    while (getline(file, temp_line))
+    {
+        if (temp_line.length() > 0)
+        {
+            lines.push_back(temp_line);
+            temp_line = "";
+        }
+    }
+    file.close();
 
     std::string hourz = std::to_string(hours);
     std::string minutez = std::to_string(minutes);
@@ -27,18 +39,30 @@ bool SaveService::save_time(int hours, int minutes)
     if (minutes < 10)
         minutez = "0" + minutez;
 
-    file << hourz << minutez << std::endl;
-    file.close();
+    if (lines.size() < 1)
+        lines.push_back(hourz + minutez);
+    else if (lines[0] == "y" || lines[0] == "n")
+        lines.emplace(lines.begin(), hourz + minutez);
+    else
+        lines[0] = hourz + minutez;
 
+    file.open("data/saves.json", std::ios::out);
+
+    for (unsigned int i = 0; i < lines.size(); ++i)
+    {
+        file << lines[i] << std::endl;
+    }
+
+    file.close();
     return true;
 }
 
 
 std::pair<int,int> SaveService::read_time()
 {
-    std::pair<int,int> hour_and_min;
+    std::pair<int,int> hour_and_min;                   // make func that checks all lines to see if numbers or ny
 
-    if (std::filesystem::exists("data/saves.json"))  // what if first line wrong
+    if (std::filesystem::exists("data/saves.json"))  // what if first line wrong then gives stoi error
     {
         qDebug() << "yay it worky";
         std::fstream file;
@@ -119,7 +143,7 @@ bool SaveService::set_onoff(bool is_on)
         }
     }
 
-    if (lines.size() < 2)  // not writing to file, maybe open in and out separately
+    if (lines.size() < 2)
     {
         if (!is_on)
         {
