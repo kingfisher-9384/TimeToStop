@@ -49,9 +49,7 @@ private:
     int minutes_;
     int seconds_;
 
-    bool is_timer_on_;   // maybe save the last state in a txt file or something cuz otherwise always init to on
-                       // put logic into own class, like all the exe shit and background and save to txt
-                       // check if file exists if not init to 1hr
+    bool is_timer_on_;                               // optimize this whole codebase this shit is atrocious
 
     QString hourz = QString::number(hours_);
     QString minutez = QString::number(minutes_);
