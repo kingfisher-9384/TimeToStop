@@ -28,7 +28,7 @@ public:
     /// if 1 line: valid number 11, y/n 12, else 10
     /// if 2 lines: 1st line valid number + 2nd line y/n 21, else 20
     /// else 30
-    int check_file_state();
+    int static check_file_state();
 
 
         const static int DEFAULT_HOUR = 1;

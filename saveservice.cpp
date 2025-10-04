@@ -112,6 +112,29 @@ bool SaveService::set_onoff(bool is_on)
 
 bool SaveService::read_onoff()
 {
+    int file_state = check_file_state();
+    if (file_state == 21)
+    {
+        std::vector<std::string> lines = get_file_contents();
+        if (lines[1] == "y")
+        {
+            return true;
+        }
+        else if (lines[1] == "n")
+        {
+            return false;
+        }
+    }
+    else if (file_state == 11)
+    {
+        set_onoff(DEFAULT_STATE);
+    }
+    else
+    {
+        fix_file(file_state);     // make func for if file is fucked aka its something other than 11 12 or 21
+    }
+    // ran outta time again, fuck my stupid chungus life
+
     // use check_file_state
     // if 2nd line exists read, else set_onoff(true)
     // the internal onoff state doesn't correlate with the file value
