@@ -30,6 +30,8 @@ public:
     /// else 30
     int static check_file_state();
 
+    void static set_default_file_state();
+
 
         const static int DEFAULT_HOUR = 1;
         const static int DEFAULT_MINUTE = 0;

@@ -129,15 +129,22 @@ bool SaveService::read_onoff()
     {
         set_onoff(DEFAULT_STATE);
     }
+    else if (file_state == 12)
+    {
+        std::vector<std::string> lines = get_file_contents();
+        if (lines[0] == "y")
+        {
+            return true;
+        }
+        else if (lines[0] == "n")
+        {
+            return false;
+        }
+    }
     else
     {
-        fix_file(file_state);     // make func for if file is fucked aka its something other than 11 12 or 21
+        set_default_file_state();
     }
-    // ran outta time again, fuck my stupid chungus life
-
-    // use check_file_state
-    // if 2nd line exists read, else set_onoff(true)
-    // the internal onoff state doesn't correlate with the file value
 
     return true;
 }
@@ -219,7 +226,7 @@ int SaveService::check_file_state()                                 // make othe
         int second_line_length = file_contents[1].length();
         if (second_line_length == 1)
         {
-            if (file_contents[0] == "n" || file_contents[0] == "y")
+            if (file_contents[1] == "n" || file_contents[1] == "y")
                 second_line_check = true;
         }
 
@@ -231,5 +238,14 @@ int SaveService::check_file_state()                                 // make othe
 
     else
         return 30;
+}
+
+
+void SaveService::set_default_file_state()
+{
+    std::ofstream file("data/saves.json");
+
+    save_time(DEFAULT_HOUR, DEFAULT_MINUTE);
+    set_onoff(DEFAULT_STATE);
 }
 

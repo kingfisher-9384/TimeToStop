@@ -156,5 +156,8 @@ void MainWindow::read_from_saves()
     hours_ = hour_and_min.first;
     minutes_ = hour_and_min.second;
 
-
+    if (SaveService::read_onoff())
+        is_timer_on_ = true;
+    else
+        is_timer_on_ = false;
 }
