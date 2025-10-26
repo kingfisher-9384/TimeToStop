@@ -35,6 +35,7 @@ private:
     void save_change();
     void update_time_label();
 
+    void init_digits();
 };
 
 #endif // DURATIONWINDOW_HH

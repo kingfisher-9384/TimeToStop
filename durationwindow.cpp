@@ -9,17 +9,19 @@ DurationWindow::DurationWindow(QWidget* parent):
     widgetCentral_(new QWidget(this)),
     gLayout_(new QGridLayout(widgetCentral_))
 {
-    infotext_ = new QLabel("Waddup bitch", this);  // init to variable previous time from mainwindow
+    infotext_ = new QLabel(this);
     gLayout_->addWidget(infotext_, 1, 3);
-    infotext_->setStyleSheet("font: 30pt;");
+    infotext_->setStyleSheet("font: 30pt;");    // BRO FIX THIS FUCKING UI THIS SHIT IS BALLZ
 
     hourBox_ = new QSpinBox(this);
     gLayout_->addWidget(hourBox_, 3, 3);
+    hourBox_->setFixedSize(150,22);
     hourBox_->setMinimum(0);
-    hourBox_->setMaximum(23);     // MAYBE CHANGE THESE TO LIKE MAX 10HRS change it also in slot func
+    hourBox_->setMaximum(23);     // maybe change to 10hrs max, change it also in slot func
 
     minuteBox_ = new QSpinBox(this);
     gLayout_->addWidget(minuteBox_, 3, 4);
+    minuteBox_->setFixedSize(150,22);
     minuteBox_->setMinimum(0);
     minuteBox_->setMaximum(59);
 
@@ -41,6 +43,8 @@ DurationWindow::DurationWindow(QWidget* parent):
     connect(saveButton_, &QPushButton::clicked, this, &DurationWindow::save_change_slot);
     connect(hourBox_, &QSpinBox::valueChanged, this, &DurationWindow::update_time_label);
     connect(minuteBox_, &QSpinBox::valueChanged, this, &DurationWindow::update_time_label);
+
+    init_digits();
 }
 
 DurationWindow::~DurationWindow()
@@ -54,6 +58,7 @@ void DurationWindow::save_change()
 
     SaveService::save_time(new_hours_, new_minutes_);
 }
+
 
 bool DurationWindow::save_change_slot()
 {
@@ -92,6 +97,7 @@ bool DurationWindow::save_change_slot()
     return true;
 }
 
+
 void DurationWindow::update_time_label()
 {
     QString hourz = QString::number(hourBox_->value());
@@ -103,3 +109,13 @@ void DurationWindow::update_time_label()
 
     infotext_->setText(hourz + ":" + minutez);
 }
+
+
+void DurationWindow::init_digits()
+{
+    std::pair<int, int> hour_and_min = SaveService::read_time();
+    hourBox_->setValue( hour_and_min.first);
+    minuteBox_->setValue( hour_and_min.second);
+    update_time_label();
+}
+

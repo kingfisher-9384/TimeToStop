@@ -38,8 +38,6 @@ public:
         const static char DEFAULT_STATE = 'y';
 
 
-    //const static std::string& path_;  try turning this shit into a variable
-
     // this class is only for creating and modifying the json file not for any other logic
     // maybe add some sort of encryption so that not just plaintext
     // bro start using pointers this shit is mad unoptimized
