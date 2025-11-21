@@ -2,6 +2,10 @@
 #include "durationwindow.hh"
 #include "saveservice.hh"
 #include <QString>
+#ifndef WIN32_LEAN_AND_MEAN  // winuser.h
+    #include <windows.h>
+#endif
+
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -9,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
     widgetCentral_(new QWidget(this)),
     gLayout_(new QGridLayout(widgetCentral_)),
     hours_(0),
-    minutes_(0),  // these prolly don't even need to bo initialized
+    minutes_(0),
     seconds_(0),
     is_timer_on_(true)
 
@@ -40,7 +44,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(onOffButton_, &QPushButton::clicked, this, &MainWindow::timer_on_off);
     connect(somethingButton_, &QPushButton::clicked, this, &MainWindow::something_func);
     connect(changeDurationButton_, &QPushButton::clicked, this, &MainWindow::change_duration);
-}
+
+    this->setMinimumSize(500, 150);
+    this->adjustSize();
+}                           // maybe move all this to main so can run in background/when window closed
 
 
 
@@ -78,8 +85,7 @@ void MainWindow::timer_func()
 {
     if (seconds_ == 0 && minutes_ == 0 && hours_ == 0)
     {
-        //timer_end();
-        timeLabel_->setText("GET FUCKED CUNT");
+        timer_end();
     }
 
     else
@@ -112,6 +118,10 @@ void MainWindow::timer_func()
     }
 }
 
+void MainWindow::timer_end()
+{
+    ExitWindowsEx(EWX_POWEROFF, SHTDN_REASON_MAJOR_OTHER|SHTDN_REASON_MINOR_MAINTENANCE);
+}
 
 void MainWindow::timer_on_off()
 {
@@ -131,7 +141,7 @@ void MainWindow::timer_on_off()
         return;
     }
 
-    qDebug() << "it's SOMEHOW shit itself";
+    qDebug() << "it's SOMEHOW shit itself";             // make turning off require restart
     return;
 }
 

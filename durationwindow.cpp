@@ -11,13 +11,13 @@ DurationWindow::DurationWindow(QWidget* parent):
 {
     infotext_ = new QLabel(this);
     gLayout_->addWidget(infotext_, 1, 3);
-    infotext_->setStyleSheet("font: 30pt;");    // BRO FIX THIS FUCKING UI THIS SHIT IS BALLZ
+    infotext_->setStyleSheet("font: 30pt;");    // Nah can't be assed to do it rn
 
     hourBox_ = new QSpinBox(this);
     gLayout_->addWidget(hourBox_, 3, 3);
     hourBox_->setFixedSize(150,22);
     hourBox_->setMinimum(0);
-    hourBox_->setMaximum(23);     // maybe change to 10hrs max, change it also in slot func
+    hourBox_->setMaximum(11);  // 24 would be too much
 
     minuteBox_ = new QSpinBox(this);
     gLayout_->addWidget(minuteBox_, 3, 4);
@@ -28,12 +28,12 @@ DurationWindow::DurationWindow(QWidget* parent):
     saveButton_ = new QPushButton("Save", this);
     gLayout_->addWidget(saveButton_, 5, 3);
 
-    gLayout_->addItem(new QSpacerItem(100, 1), 5, 1);
-    gLayout_->addItem(new QSpacerItem(100, 1), 5, 2);
-    gLayout_->addItem(new QSpacerItem(100, 1), 5, 5);
-    gLayout_->addItem(new QSpacerItem(100, 1), 5, 6);
+    //gLayout_->addItem(new QSpacerItem(100, 1), 5, 1);
+    //gLayout_->addItem(new QSpacerItem(100, 1), 5, 2);
+    //gLayout_->addItem(new QSpacerItem(100, 1), 5, 5);
+    //gLayout_->addItem(new QSpacerItem(100, 1), 5, 6);
 
-    this->setMinimumSize(700, 150);
+    this->setMinimumSize(400, 150);                                             // Fix UI later
     this->adjustSize();
     //this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     //this->setMinimumSize(0, 0);

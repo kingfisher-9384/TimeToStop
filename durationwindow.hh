@@ -8,7 +8,7 @@
 #include <QPushButton>
 
 
-class DurationWindow : public QWidget  // has to take the current alarm numbers from main
+class DurationWindow : public QWidget
 {
     Q_OBJECT
 
