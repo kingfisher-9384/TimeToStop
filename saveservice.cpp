@@ -7,6 +7,9 @@ const static int DEFAULT_HOUR = 1;
 const static int DEFAULT_MINUTE = 0;
 const static char DEFAULT_STATE = 'y';
 
+int static CURRENT_HOUR = 0;
+int static CURRENT_MINUTE = 0;
+
 
 SaveService::SaveService()
 {}
@@ -36,6 +39,10 @@ bool SaveService::save_time(const int& hours, const int& minutes)
         lines[0] = hourz + minutez;
 
     write_to_file(lines);
+
+    CURRENT_HOUR = hours;
+    CURRENT_MINUTE = minutes;
+
     return true;
 }
 
@@ -44,21 +51,16 @@ std::pair<int,int> SaveService::read_time()
 {
     std::pair<int,int> hour_and_min;
 
-    if (std::filesystem::exists("data/saves.json"))   // could have a global variable thats up to date when save time is called
-    {
-        std::vector<std::string> lines = get_file_contents();
-        hour_and_min = get_time_from_line(lines);
-
-        return hour_and_min;
-    }
-    else
+    if (!std::filesystem::exists("data/saves.json"))   // error handling for when doesn't exist and crashes (just chuck some error)
     {
         save_time(DEFAULT_HOUR, DEFAULT_MINUTE);
-        std::vector<std::string> lines = get_file_contents();
-        hour_and_min = get_time_from_line(lines);
-
-        return hour_and_min;
     }
+
+    std::vector<std::string> lines = get_file_contents();
+    hour_and_min = get_time_from_line(lines);
+    CURRENT_HOUR = hour_and_min.first;
+    CURRENT_MINUTE = hour_and_min.second;
+    return hour_and_min;
 }
 
 
@@ -77,7 +79,7 @@ std::pair<int,int> SaveService::get_time_from_line(std::vector<std::string>& lin
 }
 
 
-bool SaveService::set_onoff(bool is_on)
+bool SaveService::set_onoff(bool is_on)             // maybe like add ui element for on off??
 {
     std::string temp_line;
     std::vector<std::string> lines = get_file_contents();
@@ -153,6 +155,11 @@ bool SaveService::read_onoff()
     return true;
 }
 
+std::pair<int,int> SaveService::get_current_time()
+{
+    return (std::pair<int,int>(CURRENT_HOUR, CURRENT_MINUTE));
+}
+
 
 std::vector<std::string> SaveService::get_file_contents()
 {
@@ -185,7 +192,7 @@ void SaveService::write_to_file(std::vector<std::string>& lines)
 }
 
 
-int SaveService::check_file_state()                                 // make other functions use this for checks
+int SaveService::check_file_state()
 {
     std::vector<std::string> file_contents = get_file_contents();
     int contents_length = file_contents.size();

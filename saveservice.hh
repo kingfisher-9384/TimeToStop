@@ -15,6 +15,7 @@ public:
     bool static set_onoff(bool is_on);
     std::pair<int,int> static read_time();
     bool static read_onoff();
+    std::pair<int,int> static get_current_time();
 
 
     private:
@@ -29,9 +30,7 @@ public:
     /// if 2 lines: 1st line valid number + 2nd line y/n 21, else 20
     /// else 30
     int static check_file_state();
-
     void static set_default_file_state();
-
 
     // this class is only for creating and modifying the json file not for any other logic
     // maybe add some sort of encryption so that not just plaintext

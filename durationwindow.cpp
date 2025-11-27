@@ -91,9 +91,6 @@ bool DurationWindow::save_change_slot()
 
     save_change();
 
-    qDebug() << "new time successfully set";
-    qDebug() << "hour:  " << new_hours_;
-    qDebug() << "minute:  " << new_minutes_;
     return true;
 }
 
@@ -113,7 +110,7 @@ void DurationWindow::update_time_label()
 
 void DurationWindow::init_digits()
 {
-    std::pair<int, int> hour_and_min = SaveService::read_time();
+    std::pair<int, int> hour_and_min = SaveService::get_current_time();
     hourBox_->setValue( hour_and_min.first);
     minuteBox_->setValue( hour_and_min.second);
     update_time_label();

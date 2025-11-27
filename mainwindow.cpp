@@ -137,7 +137,6 @@ void MainWindow::timer_end()
     LPWSTR ptr = wtext;
     InitiateSystemShutdownExW(NULL, ptr,
     10, FALSE, FALSE, SHTDN_REASON_FLAG_PLANNED|SHTDN_REASON_MAJOR_OTHER|SHTDN_REASON_MINOR_MAINTENANCE);
-    qDebug() << "if you're seeing this it didn't work";
     return;
 }
 
