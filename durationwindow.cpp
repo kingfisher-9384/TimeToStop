@@ -53,8 +53,8 @@ DurationWindow::~DurationWindow()
 
 void DurationWindow::save_change()
 {
-    new_hours_ = hourBox_->value();
-    new_minutes_ = minuteBox_->value();
+    const int new_hours_ = hourBox_->value();
+    const int new_minutes_ = minuteBox_->value();
 
     SaveService::save_time(new_hours_, new_minutes_);
 }

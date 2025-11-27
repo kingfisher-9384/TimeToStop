@@ -11,16 +11,16 @@ class SaveService
 public:
     SaveService();
 
-    bool static save_time(int hours, int minutes);
+    bool static save_time(const int& hours, const int& minutes);
     bool static set_onoff(bool is_on);
     std::pair<int,int> static read_time();
     bool static read_onoff();
 
 
     private:
-    std::pair<int,int> static get_time_from_line(std::vector<std::string>);
+    std::pair<int,int> static get_time_from_line(std::vector<std::string>& lines);
     std::vector<std::string> static get_file_contents();
-    void static write_to_file(std::vector<std::string> lines);
+    void static write_to_file(std::vector<std::string>& lines);
 
     /// \brief checks if the file contents are correct
     /// \return
@@ -31,11 +31,6 @@ public:
     int static check_file_state();
 
     void static set_default_file_state();
-
-
-        const static int DEFAULT_HOUR = 1;
-        const static int DEFAULT_MINUTE = 0;
-        const static char DEFAULT_STATE = 'y';
 
 
     // this class is only for creating and modifying the json file not for any other logic

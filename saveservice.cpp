@@ -3,13 +3,17 @@
 #include <ctype.h>
 
 
+const static int DEFAULT_HOUR = 1;
+const static int DEFAULT_MINUTE = 0;
+const static char DEFAULT_STATE = 'y';
+
+
 SaveService::SaveService()
 {}
 
 
-bool SaveService::save_time(int hours, int minutes)
+bool SaveService::save_time(const int& hours, const int& minutes)
 {
-
     if (!QDir("data").exists())
     {
         QDir().mkdir("data");
@@ -38,9 +42,9 @@ bool SaveService::save_time(int hours, int minutes)
 
 std::pair<int,int> SaveService::read_time()
 {
-    std::pair<int,int> hour_and_min;                   // make func that checks all lines to see if numbers or ny (check file state)
+    std::pair<int,int> hour_and_min;
 
-    if (std::filesystem::exists("data/saves.json"))  // what if first line wrong then gives stoi error
+    if (std::filesystem::exists("data/saves.json"))   // could have a global variable thats up to date when save time is called
     {
         std::vector<std::string> lines = get_file_contents();
         hour_and_min = get_time_from_line(lines);
@@ -58,7 +62,7 @@ std::pair<int,int> SaveService::read_time()
 }
 
 
-std::pair<int,int> SaveService::get_time_from_line(std::vector<std::string> lines)
+std::pair<int,int> SaveService::get_time_from_line(std::vector<std::string>& lines)
 {
     int hour;
     int minute;
@@ -170,7 +174,7 @@ std::vector<std::string> SaveService::get_file_contents()
 }
 
 
-void SaveService::write_to_file(std::vector<std::string> lines)
+void SaveService::write_to_file(std::vector<std::string>& lines)
 {
     std::ofstream file("data/saves.json");
     for (std::string &line : lines)

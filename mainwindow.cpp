@@ -2,10 +2,9 @@
 #include "durationwindow.hh"
 #include "saveservice.hh"
 #include <QString>
-#ifndef WIN32_LEAN_AND_MEAN  // winuser.h
-    #include <windows.h>
-#endif
-
+#define WIN32_LEAN_AND_MEAN  // winuser.h
+#include <windows.h>
+#include <securitybaseapi.h>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -48,6 +47,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->setMinimumSize(500, 150);
     this->adjustSize();
 }                           // maybe move all this to main so can run in background/when window closed
+                            // maybe chuck only clock signal there
 
 
 
@@ -86,6 +86,7 @@ void MainWindow::timer_func()
     if (seconds_ == 0 && minutes_ == 0 && hours_ == 0)
     {
         timer_end();
+        timer_->stop();
     }
 
     else
@@ -120,7 +121,24 @@ void MainWindow::timer_func()
 
 void MainWindow::timer_end()
 {
-    ExitWindowsEx(EWX_POWEROFF, SHTDN_REASON_MAJOR_OTHER|SHTDN_REASON_MINOR_MAINTENANCE);
+    HANDLE hToken = NULL;
+    LUID luid;
+    OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES, &hToken);
+    LookupPrivilegeValue(L"", SE_SHUTDOWN_NAME, &luid);
+    TOKEN_PRIVILEGES tp;
+    tp.PrivilegeCount = 1;
+    tp.Privileges[0].Luid = luid;
+    tp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;                     // triple check that this doesn't escalate too much
+    AdjustTokenPrivileges(hToken, FALSE, &tp, sizeof(tp), NULL, 0);
+
+    char text[] = "Turn it off mate, go touch some grass";
+    wchar_t wtext[38];
+    mbstowcs(wtext, text, strlen(text)+1);
+    LPWSTR ptr = wtext;
+    InitiateSystemShutdownExW(NULL, ptr,
+    10, FALSE, FALSE, SHTDN_REASON_FLAG_PLANNED|SHTDN_REASON_MAJOR_OTHER|SHTDN_REASON_MINOR_MAINTENANCE);
+    qDebug() << "if you're seeing this it didn't work";
+    return;
 }
 
 void MainWindow::timer_on_off()
