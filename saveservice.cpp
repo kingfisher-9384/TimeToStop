@@ -49,15 +49,13 @@ bool SaveService::save_time(const int& hours, const int& minutes)
 
 std::pair<int,int> SaveService::read_time()
 {
-    std::pair<int,int> hour_and_min;
-
     if (!std::filesystem::exists("data/saves.json"))   // error handling for when doesn't exist and crashes (just chuck some error)
     {
         save_time(DEFAULT_HOUR, DEFAULT_MINUTE);       // add exists checks everywhere where file is written to or read
     }
 
     std::vector<std::string> lines = get_file_contents();
-    hour_and_min = get_time_from_line(lines);
+    std::pair<int,int> hour_and_min = get_time_from_line(lines);
     CURRENT_HOUR = hour_and_min.first;
     CURRENT_MINUTE = hour_and_min.second;
     return hour_and_min;
@@ -66,14 +64,11 @@ std::pair<int,int> SaveService::read_time()
 
 std::pair<int,int> SaveService::get_time_from_line(std::vector<std::string>& lines)
 {
-    int hour;
-    int minute;
-
     std::string time = lines[0];
     auto temp_string = std::string(1, time[0]) + time[1];
-    hour = std::stoi(temp_string);
+    int hour = std::stoi(temp_string);
     temp_string = std::string(1, time[2]) + time[3];
-    minute = std::stoi(temp_string);
+    int minute = std::stoi(temp_string);
 
     return (std::pair<int,int>(hour, minute));
 }
@@ -163,6 +158,11 @@ std::pair<int,int> SaveService::get_current_time()
 
 std::vector<std::string> SaveService::get_file_contents()
 {
+    if (!std::filesystem::exists("data/saves.json"))
+    {
+        set_default_file_state();
+    }
+
     std::ifstream file("data/saves.json");
 
     std::vector<std::string> lines;
@@ -189,6 +189,7 @@ void SaveService::write_to_file(std::vector<std::string>& lines)
         file << line << std::endl;
     }
     file.close();
+    return;
 }
 
 
@@ -258,5 +259,8 @@ void SaveService::set_default_file_state()
 
     save_time(DEFAULT_HOUR, DEFAULT_MINUTE);
     set_onoff(DEFAULT_STATE);
+
+    CURRENT_HOUR = DEFAULT_HOUR;
+    CURRENT_MINUTE = DEFAULT_MINUTE;
 }
 
