@@ -23,6 +23,7 @@ bool SaveService::save_time(const int& hours, const int& minutes)
     }
 
     std::vector<std::string> lines = get_file_contents();
+    int file_state = check_file_state();
 
     std::string hourz = std::to_string(hours);    // could make this into separate global helper
     std::string minutez = std::to_string(minutes);
@@ -31,9 +32,9 @@ bool SaveService::save_time(const int& hours, const int& minutes)
     if (minutes < 10)
         minutez = "0" + minutez;
 
-    if (lines.size() < 1)
+    if (file_state == 0)
         lines.push_back(hourz + minutez);
-    else if (lines[0] == "y" || lines[0] == "n")
+    else if (file_state == 12)
         lines.emplace(lines.begin(), hourz + minutez);
     else
         lines[0] = hourz + minutez;
@@ -78,8 +79,9 @@ bool SaveService::set_onoff(bool is_on)             // maybe like add ui element
 {
     std::string temp_line;
     std::vector<std::string> lines = get_file_contents();
+    int file_state = check_file_state();
 
-    if (lines.size() < 2)
+    if (file_state == 11 || file_state == 0)
     {
         if (!is_on)
         {
@@ -91,6 +93,19 @@ bool SaveService::set_onoff(bool is_on)             // maybe like add ui element
         }
 
         lines.push_back(temp_line);
+
+        write_to_file(lines);
+    }
+    else if (file_state == 10 || file_state == 12)
+    {
+        if (!is_on)
+        {
+            lines[0] = "n";
+        }
+        else if (is_on)
+        {
+            lines[0] = "y";
+        }
 
         write_to_file(lines);
     }
