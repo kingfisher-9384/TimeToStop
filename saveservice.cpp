@@ -52,7 +52,7 @@ std::pair<int,int> SaveService::read_time()
 {
     if (!std::filesystem::exists("data/saves.json"))   // error handling for when doesn't exist and crashes (just chuck some error)
     {
-        save_time(DEFAULT_HOUR, DEFAULT_MINUTE);       // add exists checks everywhere where file is written to or read
+        save_time(DEFAULT_HOUR, DEFAULT_MINUTE);       // add exists checks everywhere where file is written to or read NO NEED
     }
 
     std::vector<std::string> lines = get_file_contents();

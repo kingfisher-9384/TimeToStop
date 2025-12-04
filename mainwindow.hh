@@ -67,7 +67,6 @@ private:
 
     void timer_end();
 
-    // maybe add error handling to all functions
-
+    void system_command(char command);
 };
 #endif // MAINWINDOW_HH
