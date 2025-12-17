@@ -5,6 +5,7 @@
 #define WIN32_LEAN_AND_MEAN  // winuser.h
 #include <windows.h>
 #include <securitybaseapi.h>
+#include <QMessageBox>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -50,11 +51,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     // errors with libgcc_s_seh-1.dll, Qt6Widgets.dll, Qt6Core.dll, libstdc++-6.dll
 
-    std::wstring progPath = L"C:\\Windows\\fullpath\\timetostop.exe";
+    /*std::wstring progPath = L"C:\\Windows\\fullpath\\timetostop.exe";
     HKEY hkey = NULL;
     RegCreateKey(HKEY_CURRENT_USER, L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", &hkey); //Creates a key
     RegSetValueEx(hkey, L"timetostop", 0, REG_SZ, (BYTE *)progPath.c_str(), (progPath.size()+1) * sizeof(wchar_t));
-    RegCloseKey(hkey);
+    RegCloseKey(hkey);*/
 
 }                           // maybe move all this to main so can run in background/when window closed
                             // maybe chuck only clock signal there
@@ -65,6 +66,18 @@ MainWindow::~MainWindow()
 {
 }
 
+void MainWindow::closeEvent(QCloseEvent* event)
+{
+    QMessageBox::StandardButton confirm_button = QMessageBox::question(this, "Confirm Exit",
+        "Closing the application will shut down the system. \nAre you sure you want to exit?",
+        QMessageBox::No | QMessageBox::Yes, QMessageBox::Yes);
+    if (confirm_button != QMessageBox::Yes) {
+        event->ignore();
+    } else {
+        system_command('s');
+        event->accept();
+    }
+}
 
 void MainWindow::init_buttons()
 {

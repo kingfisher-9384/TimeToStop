@@ -8,7 +8,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QTimer>
-
+#include <QCloseEvent>
 
 
 class MainWindow : public QMainWindow
@@ -19,6 +19,8 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+protected:
+    void closeEvent(QCloseEvent* event) override;
 
 private slots:
 
