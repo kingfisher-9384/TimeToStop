@@ -278,4 +278,3 @@ void SaveService::set_default_file_state()
     CURRENT_HOUR = DEFAULT_HOUR;
     CURRENT_MINUTE = DEFAULT_MINUTE;
 }
-

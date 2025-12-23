@@ -53,9 +53,11 @@ private:
 
     bool is_timer_on_;                               // optimize this whole codebase this shit is atrocious
 
+    bool is_first_run_;
+
     QString hourz = QString::number(hours_);
-    QString minutez = QString::number(minutes_);
-    QString secondz = QString::number(seconds_);
+    QString minutez = QString::number(minutes_);        // wtf is this??
+    QString secondz = QString::number(seconds_);        // is this even usable?
 
     void init_buttons();
 
@@ -70,5 +72,9 @@ private:
     void timer_end();
 
     void system_command(char command);
+
+    bool add_to_startup();
+
+    bool remove_from_startup();
 };
 #endif // MAINWINDOW_HH

@@ -15,7 +15,8 @@ MainWindow::MainWindow(QWidget *parent)
     hours_(0),
     minutes_(0),
     seconds_(0),
-    is_timer_on_(true)
+    is_timer_on_(true),
+    is_first_run_(true)
 
 {
     setCentralWidget(widgetCentral_);
@@ -47,16 +48,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     this->setMinimumSize(500, 150);
     this->adjustSize();
-
-
-    // errors with libgcc_s_seh-1.dll, Qt6Widgets.dll, Qt6Core.dll, libstdc++-6.dll
-
-    /*std::wstring progPath = L"C:\\Windows\\fullpath\\timetostop.exe";
-    HKEY hkey = NULL;
-    RegCreateKey(HKEY_CURRENT_USER, L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", &hkey); //Creates a key
-    RegSetValueEx(hkey, L"timetostop", 0, REG_SZ, (BYTE *)progPath.c_str(), (progPath.size()+1) * sizeof(wchar_t));
-    RegCloseKey(hkey);*/
-
 }                           // maybe move all this to main so can run in background/when window closed
                             // maybe chuck only clock signal there
 
@@ -71,9 +62,10 @@ void MainWindow::closeEvent(QCloseEvent* event)
     QMessageBox::StandardButton confirm_button = QMessageBox::question(this, "Confirm Exit",
         "Closing the application will shut down the system. \nAre you sure you want to exit?",
         QMessageBox::No | QMessageBox::Yes, QMessageBox::Yes);
-    if (confirm_button != QMessageBox::Yes) {
+    if (confirm_button != QMessageBox::Yes)
         event->ignore();
-    } else {
+    else
+    {
         system_command('s');
         event->accept();
     }
@@ -81,7 +73,11 @@ void MainWindow::closeEvent(QCloseEvent* event)
 
 void MainWindow::init_buttons()
 {
-    onOffButton_ = new QPushButton("ON/OFF", this);
+    if (is_timer_on_)
+        onOffButton_ = new QPushButton("ON", this);
+    else
+        onOffButton_ = new QPushButton("OFF", this);
+
     somethingButton_ = new QPushButton("Something", this);
     changeDurationButton_ = new QPushButton("Change duration", this);
 
@@ -151,18 +147,28 @@ void MainWindow::timer_on_off()
 {
     if (is_timer_on_ == true)
     {
-        is_timer_on_ = false;
-        SaveService::set_onoff(false);
-        qDebug() << "switched off";
-        system_command('r');
+        if (remove_from_startup())
+        {
+            is_timer_on_ = false;
+            SaveService::set_onoff(false);
+            onOffButton_->setText("OFF");
+            qDebug() << "switched off";
+            system_command('r');
+        }
+        qDebug() << "function end";
         return;
     }
 
     if (is_timer_on_ == false)
     {
-        is_timer_on_ = true;
-        SaveService::set_onoff(true);
-        qDebug() << "switched on";
+        if (add_to_startup())
+        {
+            is_timer_on_ = true;
+            SaveService::set_onoff(true);
+            onOffButton_->setText("ON");
+            qDebug() << "switched on";
+        }
+        qDebug() << "function end";
         return;
     }
 
@@ -187,6 +193,12 @@ void MainWindow::change_duration()
 
 void MainWindow::read_from_saves()
 {
+    if (!std::filesystem::exists("data/saves.json"))
+    {
+        add_to_startup();
+        is_first_run_ = false;
+    }
+
     std::pair<int, int> hour_and_min = SaveService::read_time();
     hours_ = hour_and_min.first;
     minutes_ = hour_and_min.second;
@@ -227,3 +239,58 @@ void MainWindow::system_command(char command)
         return;
     }
 }
+
+bool MainWindow::add_to_startup()
+{
+    HKEY hKey;
+    LPCSTR keyPath = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
+
+    char szPath[MAX_PATH];
+    GetModuleFileNameA(NULL, szPath, MAX_PATH);     // get exe path
+
+    LONG lnRes = RegOpenKeyExA(
+        HKEY_CURRENT_USER,
+        keyPath,                    // open reg key
+        0,
+        KEY_WRITE,
+        &hKey
+        );
+
+    if (ERROR_SUCCESS == lnRes) {
+        // Set value
+        lnRes = RegSetValueExA(
+            hKey,
+            "timetostop",
+            0,
+            REG_SZ,
+            (BYTE*)szPath,
+            strlen(szPath) + 1
+            );
+
+        RegCloseKey(hKey);
+    }
+
+    return lnRes == ERROR_SUCCESS;
+}
+
+bool MainWindow::remove_from_startup()
+{
+    HKEY hKey;
+    LPCSTR keyPath = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
+
+    LONG lnRes = RegOpenKeyExA(
+        HKEY_CURRENT_USER,
+        keyPath,
+        0,
+        KEY_WRITE,
+        &hKey
+        );
+
+    if (ERROR_SUCCESS == lnRes) {
+        lnRes = RegDeleteValueA(hKey, "timetostop");
+        RegCloseKey(hKey);
+    }
+
+    return lnRes == ERROR_SUCCESS;
+}
+
