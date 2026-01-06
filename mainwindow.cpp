@@ -248,6 +248,8 @@ bool MainWindow::add_to_startup()
     char szPath[MAX_PATH];
     GetModuleFileNameA(NULL, szPath, MAX_PATH);     // get exe path
 
+    std::string quotedPath = "\"" + std::string(szPath) + "\"" + " --autostart";
+
     LONG lnRes = RegOpenKeyExA(
         HKEY_CURRENT_USER,
         keyPath,                    // open reg key
@@ -263,8 +265,8 @@ bool MainWindow::add_to_startup()
             "timetostop",
             0,
             REG_SZ,
-            (BYTE*)szPath,
-            strlen(szPath) + 1
+            (BYTE*)quotedPath.c_str(),
+            quotedPath.length() + 1
             );
 
         RegCloseKey(hKey);
