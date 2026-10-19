@@ -52,7 +52,7 @@ std::pair<int,int> SaveService::read_time()
 {
     if (!std::filesystem::exists("data/saves.json"))   // error handling for when doesn't exist and crashes (just chuck some error)
     {
-        save_time(DEFAULT_HOUR, DEFAULT_MINUTE);       // add exists checks everywhere where file is written to or read NO NEED
+        save_time(DEFAULT_HOUR, DEFAULT_MINUTE);
     }
 
     std::vector<std::string> lines = get_file_contents();
@@ -75,7 +75,7 @@ std::pair<int,int> SaveService::get_time_from_line(std::vector<std::string>& lin
 }
 
 
-bool SaveService::set_onoff(bool is_on)             // maybe like add ui element for on off??
+bool SaveService::set_onoff(bool is_on)
 {
     std::string temp_line;
     std::vector<std::string> lines = get_file_contents();
@@ -237,7 +237,7 @@ int SaveService::check_file_state()
         return 10;
     }
 
-    else if (contents_length == 2)   // maybe checking if 4digit number is cvonvertable to time
+    else if (contents_length == 2)
     {
         bool first_line_check = false;
         bool second_line_check = false;
@@ -270,10 +270,19 @@ int SaveService::check_file_state()
 
 void SaveService::set_default_file_state()
 {
-    std::ofstream file("data/saves.json");
+    QDir().mkpath("data");
 
-    save_time(DEFAULT_HOUR, DEFAULT_MINUTE);
-    set_onoff(DEFAULT_STATE);
+    std::ofstream file("data/saves.json", std::ios::trunc);
+
+    if (!file.is_open()) {
+        qWarning() << "Failed to create save file";
+        return;
+    }
+
+    file << "0100\n";
+    file << "y\n";
+
+    file.close();
 
     CURRENT_HOUR = DEFAULT_HOUR;
     CURRENT_MINUTE = DEFAULT_MINUTE;

@@ -48,9 +48,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     this->setMinimumSize(500, 150);
     this->adjustSize();
-}                           // maybe move all this to main so can run in background/when window closed
-                            // maybe chuck only clock signal there
-
+}
 
 
 MainWindow::~MainWindow()
@@ -233,7 +231,7 @@ void MainWindow::system_command(char command)
         return;
     }
 
-    if (command == 'r')                             // popup for restart (like u sure m8?)
+    if (command == 'r')
     {
         InitiateShutdownA(NULL, NULL, 10, SHUTDOWN_RESTART, SHTDN_REASON_FLAG_PLANNED|SHTDN_REASON_MAJOR_OTHER|SHTDN_REASON_MINOR_MAINTENANCE);
         return;
@@ -246,20 +244,24 @@ bool MainWindow::add_to_startup()
     LPCSTR keyPath = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
 
     char szPath[MAX_PATH];
-    GetModuleFileNameA(NULL, szPath, MAX_PATH);     // get exe path
+
+    DWORD length = GetModuleFileNameA(NULL, szPath, MAX_PATH);
+
+    if (length == 0 || length >= MAX_PATH) {
+        return false;
+    }
 
     std::string quotedPath = "\"" + std::string(szPath) + "\"" + " --autostart";
 
     LONG lnRes = RegOpenKeyExA(
         HKEY_CURRENT_USER,
-        keyPath,                    // open reg key
+        keyPath,
         0,
         KEY_WRITE,
         &hKey
         );
 
     if (ERROR_SUCCESS == lnRes) {
-        // Set value
         lnRes = RegSetValueExA(
             hKey,
             "timetostop",
