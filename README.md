@@ -1,3 +1,4 @@
+### Introduction
 Do you spend too much time on your computer? Should you go out and touch grass more often? Are you a nerd? If your answer to any of these questions is yes, then this software is just what you need. With the help of TimeToStop, you can finally rid yourself of the shackles of being a loser and get a grip. And it's FREE!!!!
 
 ### What is it?
